@@ -32,6 +32,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap; /* Allow wrapping */
         }
 
         .logo {
@@ -210,7 +211,10 @@
         /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
-                display: none;
+                display: flex;
+                width: 100%; /* Full width */
+                justify-content: space-around;
+                margin-top: 1rem; /* Space below logo */
             }
             
             .hero-title {
@@ -256,28 +260,17 @@
     }
 
     @media (max-width: 768px) {
-            .nav-links {
-                display: flex;
-                width: 100%;
-                padding: 0.5rem;
-                justify-content: space-around;
-                background-color: #15803d;
-                margin-top: 0.5rem;
-                border-radius: 4px;
-            }
-
-            nav {
-                flex-direction: column;
-            }
-
-            .btn-comprar {
-                background-color: #166534;
-            }
-
-            .hero-title {
-                font-size: 2rem;
-            }
+        .nav-links {
+            display: flex;
+            position: static; /* Remove fixed positioning */
+            background-color: transparent; /* Remove background color */
+            box-shadow: none; /* Remove shadow */
         }
+
+        .btn-comprar {
+            background-color: #15803d;
+        }
+    }
 
     </style>
 </head>
@@ -395,4 +388,3 @@
     </footer>
 </body>
 </html>
-</qodoArtifact>
