@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Verdulería Vaneza</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(240, 253, 244);
+            min-height: 100vh;
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            padding: 0 4rem;
+        }
+
+        header {
+            background-color: #16a34a;
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .volver-inicio {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            background-color: #15803d;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: absolute;
+            left: 1rem;
+        }
+
+        .volver-inicio:hover {
+            background-color: #166534;
+            transform: translateX(-5px);
+        }
+
+        .cart-icon {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background-color: #15803d;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            z-index: 101;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.05);
+            background-color: #166534;
+        }
+
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .producto-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .producto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .producto-imagen {
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            padding: 1rem;
+            background-color: #fff;
+        }
+
+        .producto-imagen img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .producto-info {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .producto-info h3 {
+            color: #1f2937;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .producto-precio {
+            color: #16a34a;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-agregar {
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .btn-agregar:hover {
+            background-color: #15803d;
+            transform: translateY(-2px);
+        }
+
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 350px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            padding: 1.5rem;
+            z-index: 102;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-modal.active {
+            right: 0;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin: 1rem -1.5rem;
+            padding: 0 1.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .cantidad-control {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-cantidad {
+            background-color: #e5e7eb;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .btn-cantidad:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-enviar-pedido {
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .btn-enviar-pedido:hover {
+            background-color: #15803d;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
+            }
+
+            .cart-modal {
+                width: 100%;
+            }
+
+            .productos-grid {
+                padding: 1rem;
+                gap: 1rem;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .producto-imagen {
+                height: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="volver-inicio">← Volver</a>
+            <h1 class="header-title">Productos Frescos</h1>
+        </div>
+    </header>
+
+    <div class="cart-icon" onclick="toggleCart()">
+        🛒 <span id="cart-count">0</span>
+    </div>
+
+    <div class="cart-modal" id="cart-modal">
+        <h2>Tu Pedido</h2>
+        <div class="cart-items" id="cart-items"></div>
+        <div id="total" class="producto-precio">Total: $0</div>
+        <button class="btn-enviar-pedido" onclick="enviarPedido()">Enviar Pedido por WhatsApp</button>
+    </div>
+
+    <div class="productos-grid" id="productos-grid"></div>
+
+    <script>
+        const productos = [
+            { id: 1, nombre: 'Manzanas', precio: 800, imagen: 'images/manzanas.jpg', color: '#ff6b6b', unidad: 'kg' },
+            { id: 2, nombre: 'Bananas', precio: 900, imagen: 'images/bananas.jpg', color: '#ffd93d', unidad: 'kg' },
+            { id: 3, nombre: 'Tomates', precio: 750, imagen: 'images/tomates.jpg', color: '#ff6b6b', unidad: 'kg' },
+            { id: 4, nombre: 'Lechuga', precio: 400, imagen: 'images/lechuga.jpg', color: '#51cf66', unidad: 'unidad' },
+            { id: 5, nombre: 'Zanahorias', precio: 500, imagen: 'images/zanahorias.jpg', color: '#ff922b', unidad: 'kg' },
+            { id: 6, nombre: 'Papas', precio: 600, imagen: 'images/papas.jpg', color: '#bc8f8f', unidad: 'kg' },
+            { id: 7, nombre: 'Cebollas', precio: 450, imagen: 'images/cebollas.jpg', color: '#d4a276', unidad: 'kg' },
+            { id: 8, nombre: 'Pimientos', precio: 600, imagen: 'images/pimientos.jpg', color: '#40c057', unidad: 'kg' },
+            { id: 9, nombre: 'Naranjas', precio: 700, imagen: 'images/naranjas.jpg', color: '#ff922b', unidad: 'kg' },
+            { id: 10, nombre: 'Mandarinas', precio: 650, imagen: 'images/mandarinas.jpg', color: '#ffa94d', unidad: 'kg' },
+            { id: 11, nombre: 'Limones', precio: 400, imagen: 'images/limones.jpg', color: '#ffd43b', unidad: 'kg' },
+            { id: 12, nombre: 'Berenjenas', precio: 550, imagen: 'images/berenjenas.jpg', color: '#845ef7', unidad: 'kg' },
+            { id: 13, nombre: 'Calabazas', precio: 450, imagen: 'images/calabazas.jpg', color: '#ff922b', unidad: 'kg' },
+            { id: 14, nombre: 'Pepinos', precio: 350, imagen: 'images/pepinos.jpg', color: '#40c057', unidad: 'kg' },
+            { id: 15, nombre: 'Espinacas', precio: 300, imagen: 'images/espinacas.jpg', color: '#37b24d', unidad: 'atado' },
+            { id: 16, nombre: 'Peras', precio: 750, imagen: 'images/peras.jpg', color: '#94d82d', unidad: 'kg' },
+            { id: 17, nombre: 'Kiwis', precio: 900, imagen: 'images/kiwis.jpg', color: '#74b816', unidad: 'kg' },
+            { id: 18, nombre: 'Apio', precio: 250, imagen: 'images/apio.jpg', color: '#40c057', unidad: 'atado' },
+            { id: 19, nombre: 'Batata', precio: 450, imagen: 'images/batata.jpg', color: '#e67700', unidad: 'kg' },
+            { id: 20, nombre: 'Chauchas', precio: 350, imagen: 'images/chauchas.jpg', color: '#2b8a3e', unidad: 'kg' },
+            { id: 21, nombre: 'Perejil', precio: 100, imagen: 'images/perejil.jpg', color: '#2f9e44', unidad: 'atado' },
+            { id: 22, nombre: 'Ajo', precio: 200, imagen: 'images/ajo.jpg', color: '#f8f9fa', unidad: 'unidad' },
+            { id: 23, nombre: 'Uvas', precio: 1200, imagen: 'images/uvas.jpg', color: '#7950f2', unidad: 'kg' },
+            { id: 24, nombre: 'Frutillas', precio: 1500, imagen: 'images/frutillas.jpg', color: '#e03131', unidad: 'kg' },
+            { id: 25, nombre: 'Duraznos', precio: 900, imagen: 'images/duraznos.jpg', color: '#ffa8a8', unidad: 'kg' },
+            { id: 26, nombre: 'Sandía', precio: 800, imagen: 'images/sandia.jpg', color: '#ff6b6b', unidad: 'kg' },
+            { id: 27, nombre: 'Melón', precio: 700, imagen: 'images/melon.jpg', color: '#ffe066', unidad: 'kg' },
+            { id: 28, nombre: 'Pomelo', precio: 600, imagen: 'images/pomelo.jpg', color: '#ff922b', unidad: 'kg' }
+        ];
+
+        let carrito = [];
+
+        function mostrarProductos() {
+            const grid = document.getElementById('productos-grid');
+            
+            grid.innerHTML = productos.map(producto => `
+                <div class="producto-card">
+                    <div class="producto-imagen" style="background-color: ${producto.color}15">
+                        <img src="${producto.imagen}" alt="${producto.nombre}">
+                    </div>
+                    <div class="producto-info">
+                        <h3>${producto.nombre}</h3>
+                        <p class="producto-precio">$${producto.precio}/${producto.unidad}</p>
+                        <button class="btn-agregar" onclick="agregarAlCarrito(${producto.id})">
+                            Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function agregarAlCarrito(id) {
+            const producto = productos.find(p => p.id === id);
+            const itemEnCarrito = carrito.find(item => item.id === id);
+
+            if (itemEnCarrito) {
+                itemEnCarrito.cantidad++;
+            } else {
+                carrito.push({ ...producto, cantidad: 1 });
+            }
+
+            actualizarCarrito();
+        }
+
+        function actualizarCarrito() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const total = document.getElementById('total');
+
+            cartItems.innerHTML = carrito.map(item => `
+                <div class="cart-item">
+                    <div>
+                        ${item.nombre}
+                        <div class="cantidad-control">
+                            <button class="btn-cantidad" onclick="cambiarCantidad(${item.id}, -1)">-</button>
+                            <span>${item.cantidad}</span>
+                            <button class="btn-cantidad" onclick="cambiarCantidad(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                    <div>$${item.precio * item.cantidad}</div>
+                </div>
+            `).join('');
+
+            cartCount.textContent = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+            total.textContent = `Total: $${carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0)}`;
+        }
+
+        function cambiarCantidad(id, cambio) {
+            const item = carrito.find(item => item.id === id);
+            if (item) {
+                item.cantidad += cambio;
+                if (item.cantidad <= 0) {
+                    carrito = carrito.filter(item => item.id !== id);
+                }
+                actualizarCarrito();
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-modal').classList.toggle('active');
+        }
+
+        function enviarPedido() {
+            if (carrito.length === 0) {
+                alert('Agrega productos a tu carrito primero');
+                return;
+            }
+
+            let mensaje = '¡Hola! Me gustaría hacer el siguiente pedido:\n\n';
+            mensaje += carrito.map(item => 
+                `${item.nombre}: ${item.cantidad} ${item.unidad} - $${item.precio * item.cantidad}`
+            ).join('\n');
+            
+            mensaje += `\n\nTotal: $${carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0)}`;
+
+            const telefono = '5492664035174';
+            
+            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`);
+        }
+
+        document.addEventListener('DOMContentLoaded', mostrarProductos);
+    </script>
+</body>
+</html>
+</qodoArtifact>
